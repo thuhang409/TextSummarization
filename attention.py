@@ -93,7 +93,21 @@ class AttentionLayer(Layer):
                 print('ci>', c_i.shape)
             return c_i, [c_i]
 
-        
+        fake_state_c = K.sum(encoder_out_seq, axis=1)
+        fake_state_e = K.sum(encoder_out_seq, axis=2)  # <= (batch_size, enc_seq_len, latent_dim
+
+        """ Computing energy outputs """
+        # e_outputs => (batch_size, de_seq_len, en_seq_len)
+        last_out, e_outputs, _ = K.rnn(
+            energy_step, decoder_out_seq, [fake_state_e],
+        )
+
+        """ Computing context vectors """
+        last_out, c_outputs, _ = K.rnn(
+            context_step, e_outputs, [fake_state_c],
+        )
+
+        return c_outputs, e_outputs
 
     def compute_output_shape(self, input_shape):
         """ Outputs produced by the layer """
