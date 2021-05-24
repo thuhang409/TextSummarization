@@ -38,7 +38,7 @@ class DataClean:
     tokens = [w for w in newStr.split() if not w in self.stopword]
     long_words=[]
     for i in tokens:
-      if len(i)>=3:                  #removing short word
+      if len(i)>=3:                  
         long_words.append(i)   
     return (" ".join(long_words)).strip()
   
